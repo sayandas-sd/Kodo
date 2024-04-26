@@ -1,19 +1,39 @@
 import { SignupInput } from "@sayan_009/common";
 import { ChangeEvent, useState } from "react";
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
+import axios from "axios";
+import { BACKEND_URL } from "../config";
 
 
-export const Login = ({type}: {type: "signup" | "signin"})=>{
+
+
+export const Login = ({type}: {type: "signup" | "signin"}) => {
+    const navigate = useNavigate();
+
     const [postInput, setPostInput] = useState<SignupInput>({
         email: "",
         password: "",
         name: "",
     });
     
+    async function sendBackend() {
+        try{
+            const response = await axios.post(`${BACKEND_URL}/api/v1/user/${type == "signup" ? "signup" : "signin"}`, postInput);
+            const jwt = response.data;
+            
+            localStorage.setItem("token", jwt);
+            navigate("/blog");
+
+        } catch(e) {
+            alert("server not connected properly")
+        }
+    }
+
+
     return <div className="h-screen flex justify-center flex-col">
  
-        <div className="flex justify-center">
-            <div>
+        <div className="flex justify-center ">
+            <div className="roun p-8 rounded-lg shadow-md">
                 <div className="px-10">
                     <div className="text-3xl font-extrabold">
                     Create an account
@@ -30,7 +50,7 @@ export const Login = ({type}: {type: "signup" | "signin"})=>{
                     <LabelInput label = "Username" placeholder="sayan@gmail.com" onChange={(e)=>{
                             setPostInput({
                             ...postInput,
-                            name: e.target.value
+                            email: e.target.value
                         });
                     }}/>
                 
@@ -47,11 +67,11 @@ export const Login = ({type}: {type: "signup" | "signin"})=>{
                     <LabelInput label = "Password" type={"password"} placeholder="password" onChange={(e)=>{
                             setPostInput({
                             ...postInput,
-                            name: e.target.value
+                            password: e.target.value
                         }); 
                     }}/>
 
-                    <button type="button" className="w-full mt-8 text-white bg-gray-800 hover:bg-gray-900 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700">
+                    <button onClick={sendBackend} type="button" className="w-full mt-8 text-white bg-gray-800 hover:bg-gray-900 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700">
                         {type === "signup" ? "Sign up" : "Sign in"}</button>
 
                 </div>
