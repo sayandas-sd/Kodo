@@ -19,13 +19,13 @@ export const Login = ({type}: {type: "signup" | "signin"}) => {
     async function sendBackend() {
         try{
             const response = await axios.post(`${BACKEND_URL}/api/v1/user/${type == "signup" ? "signup" : "signin"}`, postInput);
-            const jwt = response.data;
             
+            const jwt = response.data.token;
             localStorage.setItem("token", jwt);
-            navigate("/blog");
+            navigate("/blogs");
 
         } catch(e) {
-            alert("server not connected properly")
+            alert("Please fill the details properly")
         }
     }
 
@@ -33,21 +33,21 @@ export const Login = ({type}: {type: "signup" | "signin"}) => {
     return <div className="h-screen flex justify-center flex-col">
  
         <div className="flex justify-center ">
-            <div className="roun p-8 rounded-lg shadow-md">
+            <div className="roun p-8 rounded-lg bg-slate-50 shadow-md">
                 <div className="px-10">
                     <div className="text-3xl font-extrabold">
                     Create an account
                     </div>
-                    <div className="text-slate-500 ">
+                    <div className="text-slate-500 text-center">
                         {type === "signin"? "Don't have account" : "Already have an account?"}
-                    <Link className="underline pl-2" to = {type === "signin" ? "/signup" : "/signin"}>
+                    <Link className="underline pl-2 " to = {type === "signin" ? "/signup" : "/signin"}>
                         {type === "signin" ? "Sign up":"Sign in"}
                     </Link>
                     </div>
                 </div>
                 <div className="pt-8">
 
-                    <LabelInput label = "Username" placeholder="sayan@gmail.com" onChange={(e)=>{
+                    <LabelInput label = "Username" id="email" placeholder="sayan@gmail.com" onChange={(e)=>{
                             setPostInput({
                             ...postInput,
                             email: e.target.value
@@ -56,7 +56,7 @@ export const Login = ({type}: {type: "signup" | "signin"}) => {
                 
                    {type === "signup" && (
                     <div>
-                    <LabelInput label = "Name" placeholder="Sayan Das" onChange={(e)=>{
+                    <LabelInput label = "Name" id="name" placeholder="Sayan Das" onChange={(e)=>{
                         setPostInput({
                             ...postInput,
                             name: e.target.value
@@ -64,7 +64,7 @@ export const Login = ({type}: {type: "signup" | "signin"}) => {
                     }}/>
                     </div>    
                    )}
-                    <LabelInput label = "Password" type={"password"} placeholder="password" onChange={(e)=>{
+                    <LabelInput label = "Password" id="password" type={"password"} placeholder="password" onChange={(e)=>{
                             setPostInput({
                             ...postInput,
                             password: e.target.value
@@ -85,13 +85,14 @@ interface LabelType {
     placeholder: string;
     onChange: (e: ChangeEvent<HTMLInputElement>) => void;
     type?: string;
+    id: string;
 };
 
-function LabelInput({label, placeholder, onChange, type}: LabelType) {
+function LabelInput({label, placeholder, onChange, type, id}: LabelType) {
     return <div>
         <div>
-            <label className="block mb-2 text-sm text-gray-900 dark:text-bl font-semibold pt-4">{label}</label>
-            <input onChange = {onChange} type={type || "text"} id="first_name" className="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder={placeholder} required />
+            <label className="block mb-2 text-sm text-gray-900 dark:text-bl font-semibold pt-4" >{label}</label>
+            <input onChange = {onChange} type={type || "text"} id={id} className="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder={placeholder} required />
         </div>
     </div>
 }
