@@ -1,7 +1,7 @@
 import { SpecificBlog } from "../components/SpecificBlog";
 import { useParams } from "react-router-dom";
 import { useBlog } from "../hooks";
-import { Spinner } from "../components/Spinner";
+
 
 export const Blog = ()=>{
     const {id} = useParams();
